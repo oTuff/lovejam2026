@@ -1,5 +1,7 @@
+local physics = require("src.models.physics")
+
 ---@class Player: Object
----@field speed number
+---@field body Body
 local Player = {}
 Player.__index = Player
 
@@ -9,28 +11,35 @@ Player.__index = Player
 ---@return Player
 function Player.new(x, y, spriteOverwrite)
 	local self = setmetatable({}, Player)
-	self.x = x or 100
-	self.y = y or 100
-	self.speed = 200
+ 	self.body = physics.Body.new(x, y, 5)
 	self.sprite = spriteOverwrite or Game.assets.images.test
 	return self
 end
 
 function Player:update(dt)
-	local vx, vy = 0, 0
+	local dirx = 0.0
+	local diry = 0.0
 
-	if love.keyboard.isDown("left") then vx = -self.speed end
-	if love.keyboard.isDown("right") then vx = self.speed end
-	if love.keyboard.isDown("up") then vy = -self.speed end
-	if love.keyboard.isDown("down") then vy = self.speed end
+	-- keyboard handling --
+	if love.keyboard.isDown("w") then
+		diry = diry - 1.0
+	end
+	if love.keyboard.isDown("s") then
+		diry = diry + 1.0
+	end
+	if love.keyboard.isDown("d") then
+		dirx = dirx + 1.0
+	end
+	if love.keyboard.isDown("a") then
+		dirx = dirx - 1.0
+	end
 
-	self.x = self.x + vx * dt
-	self.y = self.y + vy * dt
+	self.body:integrate(dt, dirx, diry)
 
 	-- TODO: should use the sprite w and h instead of the TILE_SIZE
 	-- clamp
-	self.x = math.max(0, math.min(GAME_WIDTH - TILE_SIZE, self.x))
-	self.y = math.max(0, math.min(GAME_HEIGHT - TILE_SIZE, self.y))
+	self.body.x = math.max(0, math.min(GAME_WIDTH - TILE_SIZE, self.body.x))
+	self.body.y = math.max(0, math.min(GAME_HEIGHT - TILE_SIZE, self.body.y))
 end
 
 return Player

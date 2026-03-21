@@ -77,6 +77,7 @@ function love.load()
 		assets = loader.load(),
 		settings = data,
 	}
+	Game.player = player.new(100, 100)
 	-- The latest objects gets drawn on top
 	--- @type Object[]
 	Game.objects = {
@@ -90,12 +91,14 @@ function love.load()
 		enemy.new(600, 120),
 
 		-- Player
-		player.new(100, 100),
 	}
 end
 
 ---@param dt number
 function love.update(dt)
+
+	Game.player:update(dt);
+
 	for _, obj in ipairs(Game.objects) do
 		if obj.update then obj:update(dt) end
 	end
@@ -111,6 +114,9 @@ function love.draw()
 
 	push.start()
 	love.graphics.clear(0, 0, 0.3) -- background
+
+	local p = Game.player;
+	love.graphics.draw(p.sprite, p.body.x, p.body.y)
 
 	for _, obj in ipairs(Game.objects) do
 		-- if DEBUG then
