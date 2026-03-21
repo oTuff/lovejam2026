@@ -98,11 +98,13 @@ end
 ---@param dt number
 function love.update(dt)
 
-	Game.player:update(dt);
+	local p = Game.player
+
+	p:update(dt);
 
 	for _, obj in ipairs(Game.objects) do
-		if physics.CheckCollosion(Game.player, obj) then
-			print("col")
+		if physics.CheckCollosion(p, obj) then
+			print("col " .. p.body.x .. " " .. p.body.y)
 		end
 
 		if obj.update then
