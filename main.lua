@@ -3,6 +3,7 @@ local lip = require("vendor.lip")
 local loader = require("src.loader")
 local player = require("src.models.player")
 local enemy = require("src.models.enemy")
+local physics = require("src.models.physics")
 
 -- TODO:
 -- Target lua 5.1(in .luarc.json) for web compatibility(fix errors)
@@ -87,8 +88,8 @@ function love.load()
 
 		-- Enemies
 		enemy.new(400, 100),
-		enemy.new(500, 150),
-		enemy.new(600, 120),
+		enemy.new(500, 250),
+		enemy.new(600, 600),
 
 		-- Player
 	}
@@ -100,7 +101,13 @@ function love.update(dt)
 	Game.player:update(dt);
 
 	for _, obj in ipairs(Game.objects) do
-		if obj.update then obj:update(dt) end
+		if physics.CheckCollosion(Game.player, obj) then
+			print("col")
+		end
+	
+		if obj.update then
+			obj:update(dt)
+		end
 	end
 end
 

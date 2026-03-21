@@ -52,5 +52,21 @@ function Body:integrate(dt)
     end
 end
 
+---@param a Player
+---@param b Object
+physics.CheckCollosion = function(a, b)
+    local ax = a.body.x
+    local ay = a.body.y
+    local ax2 = a.body.x +32
+    local ay2 = a.body.y +32
+
+    local bx = b.x
+    local by = b.y
+    local bx2 = b.x + 32
+    local by2 = b.y + 32
+
+    return not(ax2 <= bx or ax >= bx2 or ay2 <= ay or ay >= by2)
+end
+
 physics.Body = Body
 return physics;
