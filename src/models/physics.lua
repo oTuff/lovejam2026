@@ -42,6 +42,8 @@ function Body:integrate(dt)
     self.x = self.x + self.velx * dt * pixelPerSecScale
     self.y = self.y + self.vely * dt * pixelPerSecScale
 
+    -- TODO clamp velx to maxspeed
+
     if math.abs(self.ax) == 0 then -- add friction when not accelerating
         self.velx = self.velx - self.velx * frictionCoeff * dt
     end
