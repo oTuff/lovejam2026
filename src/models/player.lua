@@ -11,30 +11,38 @@ Player.__index = Player
 ---@return Player
 function Player.new(x, y, spriteOverwrite)
 	local self = setmetatable({}, Player)
- 	self.body = physics.Body.new(x, y, 5)
-	self.sprite = spriteOverwrite or Game.assets.images.test
+ 	self.body = physics.Body.new(x, y)
+	self.sprite = spriteOverwrite or Game.assets.images.playerImg
 	return self
 end
 
 function Player:update(dt)
-	local dirx = 0.0
-	local diry = 0.0
+	self.body:clearForce()
+
+	--gravity
+	if (self.body.y <= GAME_HEIGHT - TILE_SIZE) then
+		self.body:addForce(0, 9.8 / 5)
+	end
+
+	if (self.body.y >= GAME_HEIGHT - TILE_SIZE or self.body.y <=  0) then
+		self.body.vely = 0
+	end
 
 	-- keyboard handling --
 	if love.keyboard.isDown("w") then
-		diry = diry - 1.0
+		self.body:addForce(0, -50);
 	end
 	if love.keyboard.isDown("s") then
-		diry = diry + 1.0
+		self.body:addForce(0, 5);
 	end
 	if love.keyboard.isDown("d") then
-		dirx = dirx + 1.0
+		self.body:addForce(5, 0);
 	end
 	if love.keyboard.isDown("a") then
-		dirx = dirx - 1.0
+		self.body:addForce(-5, 0);
 	end
 
-	self.body:integrate(dt, dirx, diry)
+	self.body:integrate(dt)
 
 	-- TODO: should use the sprite w and h instead of the TILE_SIZE
 	-- clamp

@@ -1,37 +1,42 @@
 local physics = {}
 
 ---@class Body 
----@field acc number
 ---@field velx number 
 ---@field vely number
+---@field ax number
+---@field ay number
 ---@field maxSpeed number
 local Body = {}
 Body.__index = Body;
 
-function Body.new(x, y, a)
+function Body.new(x, y)
 	local self = setmetatable({}, Body)
     self.x = x
     self.y = y
-    self.acc = a
+    self.ax = 0
+    self.ay = 0
     self.velx = 0
     self.vely = 0
-    self.maxSpeed = 3.716
+    self.maxSpeed = 2.716
     return self;
 end
 
-function Body:integrate(dt, dirx, diry)
+function Body:addForce(dirx, diry)
+    self.ax = dirx;
+    self.ay = diry;
+end
+
+function Body:clearForce()
+    self.ax = 0
+    self.ay = 0
+end
+
+function Body:integrate(dt)
     local pixelPerSecScale = 100
-    local frictionCoeff = 0.0514
+    local frictionCoeff = 0.514
 
-    -- normalize directions
-    local len = math.sqrt(dirx * dirx + diry * diry)
-    if len > 1 then
-        dirx = dirx / len
-        diry = diry / len
-    end
-
-    self.velx = self.velx + self.acc * dt * dirx
-    self.vely = self.vely + self.acc * dt * diry
+    self.velx = self.velx + self.ax * dt
+    self.vely = self.vely + self.ay * dt
 
     local vellen = math.sqrt(self.velx * self.velx + self.vely * self.vely)
     if vellen > self.maxSpeed then
@@ -42,16 +47,16 @@ function Body:integrate(dt, dirx, diry)
     self.x = self.x + self.velx * dt * pixelPerSecScale
     self.y = self.y + self.vely * dt * pixelPerSecScale
 
-    if math.abs(dirx) == 0 then -- add friction when not moving
-        if math.abs(self.velx) > frictionCoeff * self.acc * dt then
-            self.velx = self.velx - self.velx * dt * self.acc / 9
+    if math.abs(self.ax) == 0 then -- add friction when not moving
+        if math.abs(self.velx) > frictionCoeff * dt then
+            self.velx = self.velx - self.velx * dt / 9
         else
             self.velx = 0
         end
     end
-    if math.abs(diry) == 0 then -- same for y-axis
-        if math.abs(self.vely) > frictionCoeff * self.acc * dt then
-            self.vely = self.vely - self.vely * dt * self.acc / 9
+    if math.abs(self.ay) == 0 then -- same for y-axis
+        if math.abs(self.vely) > frictionCoeff * dt then
+            self.vely = self.vely - self.vely * dt / 9
         else
             self.vely = 0
         end
