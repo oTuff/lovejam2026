@@ -22,8 +22,8 @@ function Body.new(x, y)
 end
 
 function Body:addForce(dirx, diry)
-    self.ax = dirx;
-    self.ay = diry;
+    self.ax = self.ax + dirx;
+    self.ay = self.ay + diry;
 end
 
 function Body:clearForce()
@@ -33,33 +33,20 @@ end
 
 function Body:integrate(dt)
     local pixelPerSecScale = 100
-    local frictionCoeff = 0.514
+    local frictionCoeff = 2.298
+    local frictionCoeffY = 0.914
 
     self.velx = self.velx + self.ax * dt
     self.vely = self.vely + self.ay * dt
 
-    local vellen = math.sqrt(self.velx * self.velx + self.vely * self.vely)
-    if vellen > self.maxSpeed then
-        self.velx = self.velx / (vellen / self.maxSpeed)
-        self.vely = self.vely / (vellen / self.maxSpeed)
-    end
-
     self.x = self.x + self.velx * dt * pixelPerSecScale
     self.y = self.y + self.vely * dt * pixelPerSecScale
 
-    if math.abs(self.ax) == 0 then -- add friction when not moving
-        if math.abs(self.velx) > frictionCoeff * dt then
-            self.velx = self.velx - self.velx * dt / 9
-        else
-            self.velx = 0
-        end
+    if math.abs(self.ax) == 0 then -- add friction when not accelerating
+        self.velx = self.velx - self.velx * frictionCoeff * dt
     end
     if math.abs(self.ay) == 0 then -- same for y-axis
-        if math.abs(self.vely) > frictionCoeff * dt then
-            self.vely = self.vely - self.vely * dt / 9
-        else
-            self.vely = 0
-        end
+        self.vely = self.vely - self.vely * frictionCoeffY * dt
     end
 end
 

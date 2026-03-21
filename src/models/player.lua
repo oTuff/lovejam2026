@@ -21,7 +21,7 @@ function Player:update(dt)
 
 	--gravity
 	if (self.body.y <= GAME_HEIGHT - TILE_SIZE) then
-		self.body:addForce(0, 9.8 / 5)
+		self.body:addForce(0, 9.8)
 	end
 
 	if (self.body.y >= GAME_HEIGHT - TILE_SIZE or self.body.y <=  0) then
