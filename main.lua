@@ -104,7 +104,7 @@ function love.update(dt)
 		if physics.CheckCollosion(Game.player, obj) then
 			print("col")
 		end
-	
+
 		if obj.update then
 			obj:update(dt)
 		end

@@ -65,7 +65,7 @@ physics.CheckCollosion = function(a, b)
     local bx2 = b.x + 32
     local by2 = b.y + 32
 
-    return not(ax2 <= bx or ax >= bx2 or ay2 <= ay or ay >= by2)
+    return not(ax2 <= bx or ax >= bx2 or ay2 <= by or ay >= by2)
 end
 
 physics.Body = Body
