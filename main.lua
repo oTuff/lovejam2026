@@ -23,6 +23,9 @@ function love.load()
 	GAME_WIDTH, GAME_HEIGHT = 1024, 768
 	SETTINGS_FILENAME = "settings.ini"
 
+	sti = require 'vendor.sti'
+	gamemap = sti ('assets/tield/frø.lua')
+
 	-- Reading environment variable DEBUG and load the dbg tool
 	DEBUG = os.getenv("DEBUG")
 	if DEBUG then
@@ -114,6 +117,9 @@ function love.update(dt)
 end
 
 function love.draw()
+
+gamemap:draw()
+
 	if DEBUG then
 		love.graphics.setColor(1, 1, 1)
 		love.graphics.print(("FPS: %d"):format(love.timer.getFPS()), 8, 8)
@@ -122,7 +128,8 @@ function love.draw()
 	end
 
 	push.start()
-	love.graphics.clear(0, 0, 0.3) -- background
+	
+	--love.graphics.clear(0, 0, 0.3) -- background
 
 	local p = Game.player;
 	love.graphics.draw(p.sprite, p.body.x, p.body.y)
