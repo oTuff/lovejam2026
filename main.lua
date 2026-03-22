@@ -4,12 +4,7 @@ local loader = require("src.loader")
 local player = require("src.models.player")
 local enemy = require("src.models.enemy")
 local physics = require("src.models.physics")
-
--- TODO:
--- Target lua 5.1(in .luarc.json) for web compatibility(fix errors)
--- Fix debuge stuff(find the best approach)
--- Handle the gamestate in update and draw:
--- Add a menu screen + settings(maybe also ui components?)
+local sti = require("vendor.sti")
 
 ---@class Object
 ---@field x integer
@@ -22,19 +17,17 @@ function love.load()
 	TILE_SIZE = 32
 	GAME_WIDTH, GAME_HEIGHT = 1024, 768
 	SETTINGS_FILENAME = "settings.ini"
+	push.setupScreen(GAME_WIDTH, GAME_HEIGHT)
+	love.graphics.setDefaultFilter("nearest", "nearest")
+	love.graphics.setNewFont(36)
 
-	sti = require "vendor.sti"
-	gamemap = sti("assets/tield/frø.lua")
+	Gamemap = sti("assets/tield/frø.lua")
 
 	-- Reading environment variable DEBUG and load the dbg tool
 	DEBUG = os.getenv("DEBUG")
 	if DEBUG then
 		dbg = require("tools.debugger")
 	end
-
-	push.setupScreen(GAME_WIDTH, GAME_HEIGHT)
-	love.graphics.setDefaultFilter("nearest", "nearest")
-	love.graphics.setNewFont(36)
 
 	--- A set of named values that represent the possible game states
 	---@enum Gamestate
@@ -44,12 +37,6 @@ function love.load()
 		paused = 3,
 		gameOver = 4,
 	}
-
-	-- local path = love.filesystem.getAppdataDirectory()
-
-	-- local path = love.filesystem.getIdentity()
-	-- local isFile = love.filesystem.exists("settings.ini")
-	-- assert(isFile, "does not exist")
 
 	-- Read settings
 	local data
@@ -96,8 +83,6 @@ function love.load()
 		enemy.new(400, 100),
 		enemy.new(500, 250),
 		enemy.new(600, 600),
-
-		-- Player
 	}
 end
 
@@ -119,8 +104,6 @@ function love.update(dt)
 end
 
 function love.draw()
-	gamemap:draw()
-
 	if DEBUG then
 		love.graphics.setColor(1, 1, 1)
 		love.graphics.print(("FPS: %d"):format(love.timer.getFPS()), 8, 8)
@@ -129,6 +112,7 @@ function love.draw()
 	end
 
 	push.start()
+	Gamemap:draw()
 
 	--love.graphics.clear(0, 0, 0.3) -- background
 
