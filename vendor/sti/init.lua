@@ -427,10 +427,10 @@ function Map:setObjectCoordinates(layer)
 			object.rectangle = {}
 
 			local vertices = {
-				{ x = x,   y = y },
+				{ x = x,     y = y },
 				{ x = x + w, y = y },
 				{ x = x + w, y = y + h },
-				{ x = x,   y = y + h },
+				{ x = x,     y = y + h },
 			}
 
 			for _, vertex in ipairs(vertices) do
@@ -877,7 +877,7 @@ function Map:update(dt)
 			if update and self.tileInstances[tile.gid] then
 				for _, j in pairs(self.tileInstances[tile.gid]) do
 					local t = self.tiles
-					[tonumber(tile.animation[tile.frame].tileid) + self.tilesets[tile.tileset].firstgid]
+					    [tonumber(tile.animation[tile.frame].tileid) + self.tilesets[tile.tileset].firstgid]
 					j.batch:set(j.id, t.quad, j.x, j.y, j.r, tile.sx, tile.sy, 0, j.oy)
 				end
 			end
@@ -950,7 +950,7 @@ function Map.drawLayer(_, layer)
 	-- if the layer has a tintcolor set
 	if layer.tintcolor then
 		r, g, b, a = unpack(layer.tintcolor)
-		a = a or 255              -- alpha may not be specified
+		a = a or 255                      -- alpha may not be specified
 		lg.setColor(r / 255, g / 255, b / 255, a / 255) -- Tiled uses 0-255
 		-- if a tintcolor is not given just use the current color
 	else
@@ -995,10 +995,10 @@ function Map:drawObjectLayer(layer)
 	assert(layer.type == "objectgroup",
 		"Invalid layer type: " .. layer.type .. ". Layer must be of type: objectgroup")
 
-	local line    = { 160, 160, 160, 255 * layer.opacity }
-	local fill    = { 160, 160, 160, 255 * layer.opacity * 0.5 }
+	local line       = { 160, 160, 160, 255 * layer.opacity }
+	local fill       = { 160, 160, 160, 255 * layer.opacity * 0.5 }
 	local r, g, b, a = lg.getColor()
-	local reset   = { r, g, b, a * layer.opacity }
+	local reset      = { r, g, b, a * layer.opacity }
 
 	local function sortVertices(obj)
 		local vertex = {}
@@ -1577,10 +1577,10 @@ function Map:convertPixelToTile(x, y)
 		}
 
 		local offsetsStaggerY = {
-			{ x = 1,  y = 1 },
-			{ x = 0,  y = 2 },
-			{ x = 1,  y = 2 },
-			{ x = 1,  y = 3 },
+			{ x = 1, y = 1 },
+			{ x = 0, y = 2 },
+			{ x = 1, y = 2 },
+			{ x = 1, y = 3 },
 		}
 
 		local offsets = staggerX and offsetsStaggerX or offsetsStaggerY

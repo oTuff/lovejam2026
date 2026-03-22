@@ -17,14 +17,18 @@ function love.load()
 	TILE_SIZE = 32
 	GAME_WIDTH, GAME_HEIGHT = 1024, 768
 	SETTINGS_FILENAME = "settings.ini"
+
 	push.setupScreen(GAME_WIDTH, GAME_HEIGHT)
 	love.graphics.setDefaultFilter("nearest", "nearest")
 	love.graphics.setNewFont(36)
 
 	Gamemap = sti("assets/tield/frø.lua")
+	Gamemap:resize(GAME_WIDTH, GAME_HEIGHT)
+	WORLD_WIDTH  = Gamemap.width * Gamemap.tilewidth
+	WORLD_HEIGHT = Gamemap.height * Gamemap.tileheight
 
 	-- Reading environment variable DEBUG and load the dbg tool
-	DEBUG = os.getenv("DEBUG")
+	DEBUG        = os.getenv("DEBUG")
 	if DEBUG then
 		dbg = require("tools.debugger")
 	end
@@ -71,6 +75,7 @@ function love.load()
 		assets = loader.load(),
 		settings = data,
 	}
+	Game.camera = { x = 0, y = 0 }
 	Game.player = player.new(100, 100)
 	-- The latest objects gets drawn on top
 	--- @type Object[]
@@ -101,6 +106,16 @@ function love.update(dt)
 			obj:update(dt)
 		end
 	end
+
+	-- Camera
+	local cam = Game.camera
+	local targetX = p.body.x - GAME_WIDTH / 2
+	local targetY = p.body.y - GAME_HEIGHT / 2
+	local smoothing = 1 - math.exp(-5 * dt)
+	cam.x = cam.x + (targetX - cam.x) * smoothing
+	cam.y = cam.y + (targetY - cam.y) * smoothing
+	cam.x = math.max(0, math.min(WORLD_WIDTH - GAME_WIDTH, cam.x))
+	cam.y = math.max(0, math.min(WORLD_HEIGHT - GAME_HEIGHT, cam.y))
 end
 
 function love.draw()
@@ -112,24 +127,30 @@ function love.draw()
 	end
 
 	push.start()
-	Gamemap:draw()
+	local cx = -math.floor(Game.camera.x)
+	local cy = -math.floor(Game.camera.y)
 
-	--love.graphics.clear(0, 0, 0.3) -- background
+	-- Fix push working with sti
+	local sx, sy, sw, sh = love.graphics.getScissor()
+	love.graphics.setScissor()
+	Gamemap:draw(cx, cy)
+	love.graphics.setScissor(sx, sy, sw, sh)
+
+	love.graphics.push()
+	love.graphics.translate(cx, cy)
 
 	local p = Game.player
 	love.graphics.draw(p.sprite, p.body.x, p.body.y)
 
 	for _, obj in ipairs(Game.objects) do
-		-- if DEBUG then
-		-- print(Debug.pp(obj.sprite), type(obj.__index))
-		-- print(Debug.pp(obj.sprite))
-		-- end
 		love.graphics.draw(obj.sprite, obj.x, obj.y)
 	end
 
+	love.graphics.pop()
 	push.finish()
 end
 
 function love.resize()
+	Gamemap:resize(GAME_WIDTH, GAME_HEIGHT)
 	return push.resize()
 end
