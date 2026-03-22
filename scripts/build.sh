@@ -23,7 +23,7 @@ build_love() {
 build_web() {
     echo "Building Web export..."
     mkdir -p "$WEB_DIR"
-    npx love.js -t "$GAME_NAME" "$LOVE_FILE" "$WEB_DIR/"
+    npx love.js -t "$GAME_NAME" "$LOVE_FILE" "$WEB_DIR/" -c
     zip -9 -r "$BIN_DIR/${GAME_NAME}_web.zip" "$WEB_DIR"
 }
 

@@ -1,0 +1,21 @@
+name: Build and Publish the Game
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Build all
+        run: ./scripts/build.sh all
+      - name: Publish to Itch
+        run: |
+          curl -L "https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default" -o butler.zip
+          unzip butler.zip
+          sudo mv butler /usr/local/bin/butler
+          sudo chmod +x /usr/local/bin/butler
+          ./scripts/publish.sh

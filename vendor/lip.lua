@@ -33,6 +33,7 @@ function lip.load(fileName)
 			if (tonumber(param)) then
 				param = tonumber(param)
 			end
+			---@diagnostic disable-next-line: need-check-nil
 			data[section][param] = value
 		end
 	end

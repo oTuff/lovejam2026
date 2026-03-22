@@ -23,8 +23,8 @@ function love.load()
 	GAME_WIDTH, GAME_HEIGHT = 1024, 768
 	SETTINGS_FILENAME = "settings.ini"
 
-	sti = require 'vendor.sti'
-	gamemap = sti ('assets/tield/frø.lua')
+	sti = require "vendor.sti"
+	gamemap = sti("assets/tield/frø.lua")
 
 	-- Reading environment variable DEBUG and load the dbg tool
 	DEBUG = os.getenv("DEBUG")
@@ -52,7 +52,10 @@ function love.load()
 	-- assert(isFile, "does not exist")
 
 	-- Read settings
-	local data = lip.load(SETTINGS_FILENAME)
+	local data
+	if love.filesystem.getInfo(SETTINGS_FILENAME) then
+		data = lip.load(SETTINGS_FILENAME)
+	end
 	if not data then
 		-- Default settings
 		-- TODO: replace with actual settings
@@ -100,10 +103,9 @@ end
 
 ---@param dt number
 function love.update(dt)
-
 	local p = Game.player
 
-	p:update(dt);
+	p:update(dt)
 
 	for _, obj in ipairs(Game.objects) do
 		if physics.CheckCollosion(p, obj) then
@@ -117,8 +119,7 @@ function love.update(dt)
 end
 
 function love.draw()
-
-gamemap:draw()
+	gamemap:draw()
 
 	if DEBUG then
 		love.graphics.setColor(1, 1, 1)
@@ -128,10 +129,10 @@ gamemap:draw()
 	end
 
 	push.start()
-	
+
 	--love.graphics.clear(0, 0, 0.3) -- background
 
-	local p = Game.player;
+	local p = Game.player
 	love.graphics.draw(p.sprite, p.body.x, p.body.y)
 
 	for _, obj in ipairs(Game.objects) do

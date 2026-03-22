@@ -15,6 +15,7 @@ local function pretty(obj, max_depth)
 		return (meta and meta.__tostring)
 	end
 
+	---@diagnostic disable-next-line: redefined-local
 	local function recurse(obj, depth)
 		if type(obj) == "string" then
 			-- Dump the string so that escape sequences are printed.
@@ -214,6 +215,7 @@ local function compile_chunk(block, env)
 		if chunk then setfenv(chunk, env) end
 	else
 		-- The Lua 5.2 way is a bit cleaner
+		---@diagnostic disable-next-line: redundant-parameter
 		chunk = load(block, source, "t", env)
 	end
 
@@ -270,6 +272,7 @@ end
 
 -- Wee Lua version differences
 local pack = function(...) return select("#", ...), { ... } end
+---@diagnostic disable-next-line: deprecated
 local unpack = unpack or table.unpack
 
 local function cmd_print(expr)
@@ -614,6 +617,7 @@ function dbg.call(f, ...)
 		dbg(false, 1, "dbg.call()")
 
 		return err
+		---@diagnostic disable-next-line: redundant-parameter
 	end, ...)
 end
 
